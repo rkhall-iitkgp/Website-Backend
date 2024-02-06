@@ -1,7 +1,7 @@
 const express = require("express")
 const mongoose = require("mongoose");
 const cors = require("cors");
-const { login } = require("./controller/user")
+const { loginWithPassword, loginWithOtp } = require("./controller/user")
 const { verifyOTP } = require("./controller/user")
 const app = express();
 require('dotenv').config()
@@ -18,7 +18,8 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.post("/login", login)
+app.post("/loginWithPassword", loginWithPassword)
+app.post("/loginWithOtp", loginWithOtp)
 app.post("/verify", verifyOTP)
 
 app.listen(8000, () => {
