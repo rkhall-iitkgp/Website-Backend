@@ -3,20 +3,20 @@ const speakeasy = require("speakeasy")
 const jwt = require("jsonwebtoken")
 const { User } = require("../model/User")
 const { sendMail } = require("./sendmail")
+const { client } = require("../redis")
 
 exports.loginWithPassword = async (req, res) => {
     try {
         if (!req.body.email || !req.body.password) return res.status(400).json({ success: false, message: "Please enter email and password" });
-    
+
         const user = await User.findOne({ email: req.body.email.toLowerCase() }).exec();
         if (!user) return res.status(400).json({ success: false, message: "User does not exist" });
-        
+
         const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) return res.status(400).json({ success: false, message: "Invalid password" });
         delete user.password;
-        jwt.sign({ userId: user }, process.env.SECRET_KEY, { expiresIn: "15d" }, (err, token) => {
+        jwt.sign({ userId: user }, process.env.SECRET_KEY, { expiresIn: "15d" }, async (err, token) => {
             if (err) return res.status(400).json({ success: false, message: "Login error" });
-            return res.status(200).json({ success: true, message: "Login successful", token });
         })
     } catch (e) {
         res.status(400).json({ success: false, message: e.message })
@@ -42,10 +42,26 @@ exports.loginWithOtp = async (req, res) => {
         // Send OTP to user (e.g., via email or SMS)
         sendMail(req.body.email, otp);
         // save the secret key in the user object or database
-        user.secret = secret.base32;
+        await client.set(user.email, secret.base32, { EX: 300 }, (err, res) => {
+            if (err) console.log(err);
+            console.log(res);
+        });
+
         await user.save();
         return res.status(200).json({ success: true, message: "OTP sent to your email" });
-    } catch (e) {
+     } catch (e) {
+        console.log(e)
+        res.status(400).json({ success: false, message: e.message })
+    }
+}
+exports.register = async (req, res) => {
+    try {
+        if (!req.body.email || !req.body.password) return res.status(400).json({ success: false, message: "Please enter email and password" });
+
+        const user = await User.findOne({ email: req.body.email.toLowerCase() }).exec();
+        if (user) return res.status(400).json({ success: false, message: "User already exists" });
+    }
+    catch (e) {
         res.status(400).json({ success: false, message: e.message })
     }
 }
@@ -55,10 +71,10 @@ exports.verifyOTP = async (req, res) => {
         const { otp } = req.body;
         if (!otp) return res.status(400).json({ success: false, message: "Please enter OTP" });
 
-        const user = await User.findOne({ email: req.body.email.toLowerCase() }).exec();
-        if (!user) return res.status(400).json({ success: false, message: "User does not exist" });
-
-        const secret = user.secret; // Retrieve the secret from the user object or database
+        const secret = await client.get(req.body.email, (err, res) => {
+            if (err) console.log(err);
+            console.log(res);
+        });
 
         // Verify OTP
         const verified = speakeasy.totp.verify({
@@ -71,6 +87,7 @@ exports.verifyOTP = async (req, res) => {
         if (verified) {
             // OTP verification successful
             // Proceed with login logic
+            const user = await User.findOne({ email: req.body.email.toLowerCase() }).exec();
             jwt.sign({ userId: user }, process.env.SECRET_KEY, { expiresIn: "1h" }, (err, token) => {
                 if (err) return res.status(400).json({ success: false, message: "Login error" });
                 return res.status(200).json({ success: true, message: "Login successful", token });
