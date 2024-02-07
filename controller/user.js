@@ -84,3 +84,24 @@ exports.verifyOTP = async (req, res) => {
         res.status(400).json({ success: false, message: e.message })
     }
 }
+
+exports.register = async (req, res) => {
+    try {
+        if (!req.body.email || !req.body.password) return res.status(400).json({ success: false, message: "Please enter email and password" });
+
+        const user = await User.findOne({ email: req.body.email.toLowerCase() }).exec();
+        if (user) return res.status(400).json({ success: false, message: "User already exists" });
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        const newUser = new User({
+            email: req.body.email.toLowerCase(),
+            password: hashedPassword
+        });
+        await newUser.save();
+        res.status(200).json({ success: true, message: "User registered successfully" });
+    }
+    catch {
+        res.status(400).json({ success: false, message: e.message })
+    }
+}
