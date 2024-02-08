@@ -21,5 +21,4 @@ exports.sendMail = async (to, otp) => {
         console.log('message sent ....')
     })
         .catch((err) => { console.log(err) })
-
 }
