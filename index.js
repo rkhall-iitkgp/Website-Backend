@@ -12,7 +12,7 @@ require('dotenv').config()
 
 try {
     mongoose.connect(process.env.MONGO_URI).then(() => console.log("Connected to mongoose"))
-    client.connect("redis://red-cn37f87109ks73eo6930:6379");
+    client.connect();
     client.on("error", err => console.log("Redis client error: ", err));
     client.on("connect", () => console.log("Connected to redis"));
 } catch (e) {

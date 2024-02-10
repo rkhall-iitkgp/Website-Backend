@@ -11,7 +11,7 @@ exports.register = async (req, res) => {
         }
         bcrypt.hash(req.body.password, 10, function(err, hash) {
             // Store hash in your password DB.
-            req.body.password = hash;
+            user.password = hash;
             console.log("hashed password", hash);
             if (err) {
                 console.log(err);
