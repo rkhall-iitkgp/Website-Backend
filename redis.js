@@ -1,3 +1,4 @@
+const { Socket } = require("dgram");
 const { createClient } = require("redis");
 
 const client = createClient({
