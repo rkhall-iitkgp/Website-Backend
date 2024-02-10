@@ -14,8 +14,8 @@ require('dotenv').config()
 
 try {
     mongoose.connect(process.env.MONGO_URI).then(() => console.log("Connected to mongoose"))
-    client.connect("redis://red-cn37f87109ks73eo6930:6379rediss://red-cn37f87109ks73eo6930:hKPRP5WYgHowPIVe4pCz5AHaZ3BIrxmI@singapore-redis.render.com:6379");
-    client.on("error", err => console.log("Redis client error: ", err));
+    client.connect();
+    client.on("error", err => console.log("Redis client error: ", err.message));
     client.on("connect", () => console.log("Connected to redis"));
 } catch (e) {
     console.log(e)
