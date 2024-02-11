@@ -28,7 +28,7 @@ app.post("/login/password", loginWithPassword)
 app.post("/login/otp", loginWithOtp)
 app.post("/login/verify", verifyOTP)
 // app.put("/update", authenticateToken, update)
-app.get("/dashboard/",authenticateToken,getUserData)
+app.get("/dashboard",authenticateToken,getUserData)
 app.post("/register", register)
 app.listen(8000, () => {
     console.log("Listening on port 8000...")

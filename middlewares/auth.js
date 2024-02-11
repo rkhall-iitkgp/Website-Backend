@@ -8,7 +8,7 @@ const authenticateToken = (req, res, next) => {
         if (err) {
             return res.status(401).json({ success: false, message: "Login error" })
         } else {
-            User.findById(decoded.userId).exec().then(data => {
+            User.findById(decoded.userId.id).exec().then(data => {
                 if (data) {
                     req.user = decoded;
                     next();
