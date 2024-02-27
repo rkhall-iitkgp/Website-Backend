@@ -42,7 +42,7 @@ exports.loginWithOtp = async (req, res) => {
         // save the secret key in the user object or database
         if (!client.isOpen) return res.status(500).json({ success: false, message: "Redis client error", code : -4 });
         
-        await client.set(user.personalEmail, secret.base32, { EX: "500"}, (err, res) => {
+        await client.set(user.personalEmail, secret.base32, { EX: process.env.OTP_EXPIRE_TIME }, (err, res) => {
             if (err) {
                 console.log("error in setting redis key", err);
                 return res.status(500).json({ success: false, message: "Redis client error", code : -4 });
