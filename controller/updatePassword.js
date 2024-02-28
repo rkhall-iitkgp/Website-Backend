@@ -1,6 +1,7 @@
 const { User } = require("../model/User");
 
 exports.updatePassword = async (req, res) => {
+	console.log(req)
 	try {
 		const { password, newPassword } = req.body;
 		if (!password || !newPassword) {

@@ -28,13 +28,14 @@ app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.post("/login/password", loginWithPassword);
 app.post("/login/otp", loginWithOtp);
 app.post("/login/verify", verifyOTP);
-app.put("/updateInfo", authenticateToken, updateInfo);
+app.put("/updateInfo",authenticateToken, updateInfo);
 app.patch("/user/password", authenticateToken, updatePassword);
 app.post("/register", register);
 app.listen(8000, () => {
-	console.log("Listening on port 8000...");
-});
+    console.log("Listening on port 8000...")
+})
+
+

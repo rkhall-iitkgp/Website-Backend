@@ -1,6 +1,9 @@
 const { User } = require("../model/User");
 
 exports.updateInfo = async (req, res) => {
+
+	console.log("Inside update info")
+	console.log(req.body)
 	const {
 		name,
 		rollNo,
@@ -16,9 +19,12 @@ exports.updateInfo = async (req, res) => {
 		profilePic,
 		resume,
 	} = req.body;
+	const filter=req.body.instiEmail
+	console.log("filter",filter)
+	console.log("instiEmail: ",instiEmail)
 	try {
 		const user = await User.findOneAndUpdate(
-			{ instiEmail: req.user.instiEmail },
+			{ instiEmail : filter},
 			{
 				name,
 				rollNo,

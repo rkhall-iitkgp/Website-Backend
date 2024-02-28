@@ -1,6 +1,6 @@
 const { User } = require("../model/User");
 const bcrypt = require("bcryptjs");
-const { UserSchema } = require("../types/register.ts");
+const { UserSchema } = require("../types/register.ts")
 exports.register = async (req, res) => {
 	try {
 		console.log(req.body);
