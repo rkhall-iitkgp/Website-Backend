@@ -8,7 +8,9 @@ const { verifyOTP } = require("./controller/user")
 const authenticateToken = require("./middlewares/auth")
 const { upload } = require("./controller/update")
 
-const { client } = require("./redis")
+const { client } = require("./redis");
+const { forgotPassword } = require("./controller/forgotPassword");
+const { resetPassword } = require("./controller/resetPassword");
 const app = express();
 require('dotenv').config()
 
@@ -30,7 +32,10 @@ app.post("/login/password", loginWithPassword)
 app.post("/login/otp", loginWithOtp)
 app.post("/login/verify", verifyOTP)
 // app.put("/update", authenticateToken , update )
-app.post("/register", register)
+app.post("/register", register);
+
+app.post("/password/reset",forgotPassword);
+app.put('/password/reset/:token',resetPassword);
 app.listen(8000, () => {
     console.log("Listening on port 8000...")
 })

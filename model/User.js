@@ -1,5 +1,8 @@
 const { Schema, models, model } = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
+const crypto = require('crypto')
+const bcrypt = require('bcrypt')
+
 
 const userSchema = new Schema({
     name: {
@@ -54,6 +57,8 @@ const userSchema = new Schema({
             message: props => `${props.value} is not a valid date!`
         }
     },
+    resetpasswordexpire:Date,
+    resetpasswordtoken:String,
     department: {
         type: String,
         required: [true, "Department is required"]
@@ -100,5 +105,24 @@ const userSchema = new Schema({
 })
 
 userSchema.plugin(uniqueValidator, { message: "This {PATH} is already registered" })
+
+userSchema.pre('save',async function(next){
+    if(this.isModified("password")){
+    this.password = await bcrypt.hash(this.password,10);
+    }
+    next();
+
+});
+
+userSchema.methods.getresetpasswordtoken = function (){
+
+    const resettoken = crypto.randomBytes(20).toString('hex');
+    console.log(resettoken);
+    this.resetpasswordtoken = crypto.createHash('sha256').update(resettoken).digest('hex');
+    this.resetpasswordexpire = Date.now()  + 10*60*1000;
+    return resettoken;
+
+
+}
 
 exports.User = models.user || model("user", userSchema)
