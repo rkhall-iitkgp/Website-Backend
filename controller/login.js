@@ -23,6 +23,11 @@ exports.loginWithPassword = async (req, res) => {
 				.status(400)
 				.json({ success: false, message: "User does not exist", code: -2 });
 
+		if (user.isVerified === false) {
+			return res
+				.status(400)
+				.json({ success: false, message: "User not verified", code: -2 });
+		}
 		const validPassword = await bcrypt.compare(
 			req.body.password,
 			user.password
@@ -74,6 +79,11 @@ exports.loginWithOtp = async (req, res) => {
 			return res
 				.status(400)
 				.json({ success: false, message: "User does not exist", code: -2 });
+		if (user.isVerified === false) {
+			return res
+				.status(400)
+				.json({ success: false, message: "User not verified", code: -2 });
+		}
 
 		const secret = speakeasy.generateSecret({ length: 20 });
 		console.log(secret);

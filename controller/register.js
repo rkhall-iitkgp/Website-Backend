@@ -15,10 +15,19 @@ exports.register = async (req, res) => {
 				{ status: 400 }
 			);
 		}
-		const user = new User(reqBody.data);
+		const user = User.findOne({ instiEmail: reqBody.instiEmail });
+		if (user) {
+			return res.status(400).json({
+				code: -2,
+				success: false,
+				message: "User already exists",
+			});
+		}
+		const newUser = new User(reqBody);
+
 		bcrypt.hash(reqBody.password, 10, function (err, hash) {
 			// Store hash in your password DB.
-			user.password = hash;
+			newUser.password = hash;
 			console.log("hashed password", hash);
 			if (err) {
 				console.log(err);
@@ -29,8 +38,8 @@ exports.register = async (req, res) => {
 				});
 			}
 		});
-		await user.save();
-		console.log("user registered successfully", user);
+		await newUser.save();
+		console.log("user registered successfully", newUser);
 
 		res.status(200).json({
 			success: true,
