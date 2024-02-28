@@ -104,7 +104,10 @@ const userSchema = new Schema({
     }
 })
 
-userSchema.plugin(uniqueValidator, { message: "This {PATH} is already registered" })
+
+userSchema.plugin(uniqueValidator, {
+	message: "This {PATH} is already registered",
+});
 
 userSchema.pre('save',async function(next){
     if(this.isModified("password")){
@@ -126,3 +129,4 @@ userSchema.methods.getresetpasswordtoken = function (){
 }
 
 exports.User = models.user || model("user", userSchema)
+
