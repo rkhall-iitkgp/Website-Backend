@@ -72,6 +72,27 @@ const userSchema = new Schema({
         required: [true, "Role is required"],
         enum: ["student", "admin", "alumnus"],
         default: "student"
+    },
+    experience: [{
+        Title :string,
+        startTime: datetime,        
+        endTime: datetime,
+        description: string,
+        location: string,
+        position: string ,
+    }],
+    involvements: [{
+        Title :string,
+        startTime: datetime,
+        endTime: datetime,
+        description: string,
+        position: string ,
+    }],
+    profilePic: {
+        type: String,
+    },
+    resume: {
+        type: String,
     }
 }, {
     virtuals: {

@@ -2,11 +2,11 @@ const express = require("express")
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { loginWithPassword, loginWithOtp } = require("./controller/user")
-const { update } = require("./controller/update")
+const { updateInfo } = require("./controller/updateInfo")
 const { register } = require("./controller/register")
 const { verifyOTP } = require("./controller/user")
 const authenticateToken = require("./middlewares/auth")
-const { upload } = require("./controller/update")
+// const { upload } = require("./controller/update")
 
 const { client } = require("./redis")
 const app = express();
@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: true }))
 app.post("/login/password", loginWithPassword)
 app.post("/login/otp", loginWithOtp)
 app.post("/login/verify", verifyOTP)
-// app.put("/update", authenticateToken , update )
+app.put("/updateInfo", authenticateToken , updateInfo )
 app.post("/register", register)
 app.listen(8000, () => {
     console.log("Listening on port 8000...")

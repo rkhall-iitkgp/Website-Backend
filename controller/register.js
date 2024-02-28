@@ -9,7 +9,7 @@ exports.register = async (req, res) => {
         } catch (e) {
             return res.status(400).json({ success: false, message: e });
         }
-        bcrypt.hash(req.body.password, 10, function(err, hash) {
+        bcrypt.hash(req.body.password,10,function(err, hash) {
             // Store hash in your password DB.
             user.password = hash;
             console.log("hashed password", hash);
