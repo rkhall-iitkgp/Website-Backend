@@ -9,7 +9,9 @@ const { authenticateToken } = require("./middlewares/auth");
 // const { upload } = require("./controller/update")
 
 const { client } = require("./redis");
-const { updatePassword } = require("./controller/updatePassword");
+const { forgotPassword } = require("./controller/forgotPassword");
+const { resetPassword } = require("./controller/resetPassword");
+
 const app = express();
 require("dotenv").config();
 
@@ -26,14 +28,21 @@ try {
 
 app.use(cors());
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.post("/login/password", loginWithPassword);
-app.post("/login/otp", loginWithOtp);
-app.post("/login/verify", verifyOTP);
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+app.post("/login/password", loginWithPassword)
+app.post("/login/otp", loginWithOtp)
+app.post("/login/verify", verifyOTP)
+// app.put("/update", authenticateToken , update )
+app.post("/register", register);
+
+app.post("/password/reset",forgotPassword);
+app.put('/password/reset/:token',resetPassword);
 app.put("/updateInfo",authenticateToken, updateInfo);
 app.patch("/user/password", authenticateToken, updatePassword);
 app.post("/register", register);
+
 app.listen(8000, () => {
     console.log("Listening on port 8000...")
 })

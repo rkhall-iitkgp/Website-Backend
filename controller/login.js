@@ -1,9 +1,11 @@
-const bcrypt = require("bcryptjs");
-const speakeasy = require("speakeasy");
-const jwt = require("jsonwebtoken");
-const { User } = require("../model/User");
-const { sendMail } = require("./sendmail");
-const { client } = require("../redis");
+
+const bcrypt = require("bcryptjs")
+const speakeasy = require("speakeasy")
+const jwt = require("jsonwebtoken")
+const { User } = require("../model/User")
+const { sendMail } = require("./sendmail_otp")
+const { client } = require("../redis")
+
 
 exports.loginWithPassword = async (req, res) => {
 	try {
